@@ -8,7 +8,7 @@ require (
 	github.com/felixge/fgprof v0.9.5
 	github.com/goccy/go-json v0.10.2
 	github.com/rocket-pool/rocketpool-go v1.8.4-0.20241122223132-c5f2be18f72b
-	github.com/rocket-pool/smartnode v1.15.1-0.20241215155839-c965d632b779
+	github.com/rocket-pool/smartnode v1.15.5
 	github.com/urfave/cli/v2 v2.26.0
 )
 
