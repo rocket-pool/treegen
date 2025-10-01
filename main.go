@@ -5,6 +5,7 @@ import (
 	"os"
 	"runtime"
 	"runtime/pprof"
+	"time"
 
 	"github.com/felixge/fgprof"
 	"github.com/urfave/cli/v2"
@@ -17,7 +18,6 @@ const (
 )
 
 func main() {
-
 	// Initialise application
 	app := cli.NewApp()
 
@@ -35,8 +35,7 @@ func main() {
 			Email: "jacob@shuf.ro",
 		},
 	}
-	app.Copyright = "(c) 2023 Rocket Pool Pty Ltd"
-
+	app.Copyright = fmt.Sprintf("(c) %d Rocket Pool Pty Ltd", time.Now().Year())
 	// Set application flags
 	app.Flags = []cli.Flag{
 		&cli.Int64Flag{
@@ -178,5 +177,4 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("")
-
 }
