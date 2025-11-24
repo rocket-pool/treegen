@@ -59,7 +59,8 @@ Options:
    --use-rolling-records, -rr     Enable the rolling record capability of the Smartnode tree generator. Use this to store and load record caches instead of recalculating attestation performance each time you run treegen. (default: false)
 ```
 
-NOTE: Do *not* use the `-o` flag if you are using this script, as it is already built into the script.
+> [!NOTE]
+> Do *not* use the `-o` flag if you are using this script, as it is already built into the script.
 Output files will be stored in the `out` directory.
 
 
