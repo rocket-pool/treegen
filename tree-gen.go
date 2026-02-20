@@ -17,9 +17,9 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/fatih/color"
-	"github.com/rocket-pool/rocketpool-go/rewards"
-	"github.com/rocket-pool/rocketpool-go/rocketpool"
-	"github.com/rocket-pool/rocketpool-go/utils/eth"
+	bindingsrewards "github.com/rocket-pool/smartnode/bindings/rewards"
+	"github.com/rocket-pool/smartnode/bindings/rocketpool"
+	"github.com/rocket-pool/smartnode/bindings/utils/eth"
 	"github.com/rocket-pool/smartnode/shared/services/beacon"
 	"github.com/rocket-pool/smartnode/shared/services/beacon/client"
 	"github.com/rocket-pool/smartnode/shared/services/config"
@@ -49,7 +49,7 @@ type snapshotDetails struct {
 // It could be an entire interval, or it could be a portion of one.
 type targets struct {
 	// If generating a whole interval, we use the rewardsEvent
-	rewardsEvent *rewards.RewardsEvent
+	rewardsEvent *bindingsrewards.RewardsEvent
 
 	// For preview related functions, we use snapshotDetails
 	snapshotDetails *snapshotDetails
@@ -125,10 +125,12 @@ func GenerateTree(c *cli.Context) error {
 	}
 
 	// Create the EC and BN clients
-	ec, err := ethclient.Dial(ecUrl)
+	ecRaw, err := ethclient.Dial(ecUrl)
 	if err != nil {
 		return fmt.Errorf("error connecting to the EC: %w", err)
 	}
+
+	ec := NewEthClientWrapper(ecRaw)
 	bn := client.NewStandardHttpClient(bnUrl)
 	beaconConfig, err := bn.GetEth2Config()
 	if err != nil {
@@ -681,11 +683,11 @@ func (g *treeGenerator) getSnapshotDetails() (*snapshotDetails, error) {
 	}
 
 	// Get the start time for the interval, and how long an interval is supposed to take
-	startTime, err := rewards.GetClaimIntervalTimeStart(g.rpNative, &opts)
+	startTime, err := bindingsrewards.GetClaimIntervalTimeStart(g.rpNative, &opts)
 	if err != nil {
 		return nil, fmt.Errorf("error getting claim interval start time: %w", err)
 	}
-	intervalTime, err := rewards.GetClaimIntervalTime(g.rpNative, &opts)
+	intervalTime, err := bindingsrewards.GetClaimIntervalTime(g.rpNative, &opts)
 	if err != nil {
 		return nil, fmt.Errorf("error getting claim interval time: %w", err)
 	}
@@ -707,7 +709,7 @@ func (g *treeGenerator) getSnapshotDetails() (*snapshotDetails, error) {
 }
 
 // Gets the start slot for the given interval
-func getStartSlotForInterval(previousIntervalEvent rewards.RewardsEvent, bc beacon.Client, beaconConfig beacon.Eth2Config) (uint64, error) {
+func getStartSlotForInterval(previousIntervalEvent bindingsrewards.RewardsEvent, bc beacon.Client, beaconConfig beacon.Eth2Config) (uint64, error) {
 	// Sanity check to confirm the BN can access the block from the previous interval
 	_, exists, err := bc.GetBeaconBlock(previousIntervalEvent.ConsensusBlock.String())
 	if err != nil {

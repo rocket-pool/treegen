@@ -78,11 +78,11 @@ func (g *treeGenerator) GenerateVotingPower(s *state.NetworkState) *VotingPowerF
 		// Get provided ETH (32 * minipoolCount - matched)
 		ethProvided := big.NewInt(activeMinipoolCount * 32)
 		ethProvided.Mul(ethProvided, oneEth)
-		ethProvided.Sub(ethProvided, node.EthMatched)
+		ethProvided.Sub(ethProvided, node.EthBonded)
 
 		// Calculate the Voting Power
 		nodeVotingPower := rewards.NewQuotedBigInt(0)
-		nodeVotingPower.Set(getNodeVotingPower(s, ethProvided, node.RplStake))
+		nodeVotingPower.Set(getNodeVotingPower(s, ethProvided, node.EffectiveRPLStake))
 		out.TotalPower.Add(&out.TotalPower.Int, &nodeVotingPower.Int)
 		out.NodePower[node.NodeAddress] = nodeVotingPower
 	}
